@@ -4,32 +4,71 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class Map extends JPanel{
     private Image backgroundImage;
+    private boolean isReady;
+    private ArrayList<IMapIsReadyListener> mapIsReadyListeners;
+    private ArrayList<Feature> features;
 
     public Map(){
+        features = new ArrayList<>();
+        mapIsReadyListeners = new ArrayList<>();
         try{
             backgroundImage = loadBackgroundImage();
         }catch(Exception e){
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
+        this.setPreferredSize(getMapDimension());
+    }
 
+    public void addFeature(Feature feature) {
+        if (feature == null) return;
+        features.add(feature);
+        this.repaint();
     }
 
     @Override
     protected void paintComponent(Graphics graphics){
         super.paintComponent(graphics);
-        graphics.drawImage(backgroundImage,0,0,null);
+        setIsReady(graphics.drawImage(backgroundImage, 0, 0, null));
+        for (Feature feat : features) {
+            feat.getTriangle().paint(graphics);
+        }
     }
 
     private BufferedImage loadBackgroundImage() throws IOException{
         BufferedImage img;
         try {
-            return ImageIO.read(new URL("http://i65.tinypic.com/2zz7ndz.png"));
+            return ImageIO.read(new URL("http://oi65.tinypic.com/2zz7ndz.jpg"));
         }catch(Exception e){
             throw(new IOException("Map could not be downloaded. Please check map Path and internet connection.", e));
         }
     }
 
+    public Dimension getMapDimension() {
+        return new Dimension(backgroundImage.getWidth(null), backgroundImage.getHeight(null));
+    }
+
+    public boolean getIsReady() {
+        return isReady;
+    }
+
+    private void setIsReady(boolean ready) {
+        if (ready != isReady) {
+            isReady = ready;
+            notifyMapIsReadyListeners(ready);
+        }
+    }
+
+    public void addMapIsReadyListener(IMapIsReadyListener listener) {
+        mapIsReadyListeners.add(listener);
+    }
+
+    private void notifyMapIsReadyListeners(boolean ready) {
+        for (IMapIsReadyListener listener : mapIsReadyListeners) {
+            listener.readyStateChanged(ready);
+        }
+    }
 }
