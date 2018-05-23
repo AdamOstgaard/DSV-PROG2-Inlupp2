@@ -13,6 +13,23 @@ public class Gui extends JFrame{
         add(map, BorderLayout.WEST);
         setMinimumSize(new Dimension(map.getMapDimension()));
         setVisible(true);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        JPanel north = new JPanel();
+        JPanel South = new JPanel();
+        JPanel East = new JPanel();
+
+        JList<FeatureCategory> categories = new JList<>(
+                new FeatureCategory[]{
+                        new FeatureCategory("Buss", Color.CYAN),
+                        new FeatureCategory("Underground", Color.RED),
+                        new FeatureCategory("Train", Color.green)
+                });
+
+        East.add(categories);
+        JButton hideCategoryButton = new JButton("Hide");
+        East.add(hideCategoryButton);
+        add(East, BorderLayout.EAST);
 
         JTextField searchText = new JTextField();
         JButton searchButton = new JButton("Search");

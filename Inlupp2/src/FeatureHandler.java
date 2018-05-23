@@ -7,12 +7,10 @@ import java.util.HashSet;
 public class FeatureHandler implements IMapIsReadyListener, MouseListener, SelectedStateListener {
     private Map map;
     private Dimension clickBoundries;
-    private ArrayList<FeatureCategory> categories;
     private FeatureCollection featureCollection;
 
     public FeatureHandler() {
         featureCollection = new FeatureCollection();
-        categories = new ArrayList<>();
     }
 
     public void attach(Map map) {

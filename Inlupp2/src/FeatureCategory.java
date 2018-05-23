@@ -16,4 +16,9 @@ public class FeatureCategory {
     public Color getColor() {
         return color;
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }
