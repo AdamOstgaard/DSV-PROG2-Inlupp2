@@ -29,7 +29,6 @@ public class Map extends JPanel {
     }
 
     private BufferedImage loadBackgroundImage() throws IOException {
-        BufferedImage img;
         try {
             return ImageIO.read(new URL("http://oi65.tinypic.com/2zz7ndz.jpg"));
         } catch (Exception e) {
