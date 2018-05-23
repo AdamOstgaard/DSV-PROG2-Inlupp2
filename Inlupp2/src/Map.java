@@ -6,42 +6,34 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class Map extends JPanel{
+public class Map extends JPanel {
     private Image backgroundImage;
     private boolean isReady;
     private ArrayList<IMapIsReadyListener> mapIsReadyListeners;
-    private ArrayList<Feature> features;
 
-    public Map(){
+    public Map() {
         super(null);
-        features = new ArrayList<>();
         mapIsReadyListeners = new ArrayList<>();
-        try{
+        try {
             backgroundImage = loadBackgroundImage();
-        }catch(Exception e){
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
         this.setPreferredSize(getMapDimension());
     }
 
-    public void addFeature(Feature feature) {
-        if (feature == null) return;
-        features.add(feature);
-        this.repaint();
-    }
-
     @Override
-    protected void paintComponent(Graphics graphics){
+    protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
         setIsReady(graphics.drawImage(backgroundImage, 0, 0, null));
     }
 
-    private BufferedImage loadBackgroundImage() throws IOException{
+    private BufferedImage loadBackgroundImage() throws IOException {
         BufferedImage img;
         try {
             return ImageIO.read(new URL("http://oi65.tinypic.com/2zz7ndz.jpg"));
-        }catch(Exception e){
-            throw(new IOException("Map could not be downloaded. Please check map Path and internet connection.", e));
+        } catch (Exception e) {
+            throw (new IOException("Map could not be downloaded. Please check map Path and internet connection.", e));
         }
     }
 

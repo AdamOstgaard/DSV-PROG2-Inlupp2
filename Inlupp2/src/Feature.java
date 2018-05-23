@@ -1,23 +1,56 @@
-import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
-public abstract class Feature extends Triangle implements MouseListener {
-    private FeatureCategory type;
-    private boolean isSelected;
+public abstract class Feature implements MouseListener {
 
-    public Feature(Position position, FeatureCategory type) {
-        super(position, 100, Color.BLUE);
+    private Position position;
+    private String name;
+    private FeatureCategory category;
+    private Marker marker;
+    private ArrayList<SelectedStateListener> selectedStateEventListeners;
 
-        this.addMouseListener(this);
+    public Feature(Position position, FeatureCategory type, String name) {
+        this.position = position;
+        this.name = name;
+        this.category = type;
+        this.marker = new Marker(this);
+        this.selectedStateEventListeners = new ArrayList<>();
+        marker.addMouseListener(this);
     }
 
-    public FeatureCategory getType() {
-        return type;
+    public Position getPosition() {
+        return position;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public FeatureCategory getCategory() {
+        return category;
+    }
+
+    public Marker getMarker() {
+        return marker;
+    }
+
+    public boolean isSelected() {
+        return marker.isSelected();
+    }
+
+    public void setSelected(boolean b) {
+        if (b == isSelected()) return;
+        marker.setSelected(b);
+        selectedStateEventListeners.forEach(p -> p.selectedStateChanged(this, b));
+    }
+
+    public void toggleSelect() {
+        setSelected(!isSelected());
     }
 
     private void onLeftClick(MouseEvent e) {
-        isSelected = true;
+        toggleSelect();
         leftMouseButtonClicked(e);
     }
 
@@ -51,5 +84,9 @@ public abstract class Feature extends Triangle implements MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {
 
+    }
+
+    public void addSelectedStateEventListener(SelectedStateListener listener) {
+        selectedStateEventListeners.add(listener);
     }
 }

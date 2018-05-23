@@ -2,17 +2,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Path2D;
 
-public class Triangle extends JComponent {
-    private final Position position;
-    private final Color color;
+public class Marker extends JComponent {
     private final Path2D path2D;
-    private final int side;
+    private final Feature owner;
+    private final int side = 50;
+    private boolean isSelected;
 
+    public Marker(Feature owner) {
 
-    public Triangle(Position position, int side, Color color) {
-        this.position = position;
-        this.color = color;
-        this.side = side;
+        isSelected = false;
+        this.owner = owner;
 
         path2D = new Path2D.Double();
 
@@ -20,6 +19,15 @@ public class Triangle extends JComponent {
         setBounds(getPositionOffset().getX(), getPositionOffset().getY(), side, side);
 
         drawPath(side);
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+        repaint();
     }
 
     private void drawPath(int side) {
@@ -41,15 +49,19 @@ public class Triangle extends JComponent {
 
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setPaint(color);
+
+        if (isSelected) {
+            g2.setPaint(Color.RED);
+            g2.setStroke(new BasicStroke(10));
+            g2.draw(path2D);
+        }
+        g2.setPaint(owner.getCategory().getColor());
+
         g2.fill(path2D);
     }
 
     private Position getPositionOffset() {
-        return new Position(position.getX() - side / 2, (int) (position.getY() - side / 1.25));
+        return new Position(owner.getPosition().getX() - side / 2, (int) (owner.getPosition().getY() - side / 1.25));
     }
 
-    public Position getPosition() {
-        return position;
-    }
 }

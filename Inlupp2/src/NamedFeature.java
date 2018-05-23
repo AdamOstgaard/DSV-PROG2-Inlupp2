@@ -3,11 +3,8 @@ import java.awt.event.MouseEvent;
 
 public class NamedFeature extends Feature {
 
-    private String name;
-
     public NamedFeature(Position position, FeatureCategory type, String name) {
-        super(position, type);
-        this.name = name;
+        super(position, type, name);
     }
 
     @Override
@@ -17,6 +14,6 @@ public class NamedFeature extends Feature {
 
     @Override
     protected void rightMouseButtonClicked(MouseEvent e) {
-        JOptionPane.showMessageDialog(this, name + "(" + getPosition().toString() + ")");
+        JOptionPane.showMessageDialog(getMarker(), getName() + "(" + getPosition().toString() + ")");
     }
 }

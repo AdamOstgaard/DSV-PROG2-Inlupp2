@@ -1,3 +1,4 @@
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -6,11 +7,13 @@ public class FeatureCollection {
     private HashMap<Position, Feature> featuresPosition;
     private HashMap<String, HashSet<Feature>> featuresName;
     private HashMap<FeatureCategory, HashSet<Feature>> featuresCategory;
+    private HashSet<Feature> selectedFeatures;
 
     public FeatureCollection() {
         featuresPosition = new HashMap<>();
         featuresName = new HashMap<>();
         featuresCategory = new HashMap<>();
+        selectedFeatures = new HashSet<>();
     }
 
     public HashSet<Feature> getFeatures() {
@@ -29,7 +32,7 @@ public class FeatureCollection {
         return featuresPosition.get(position);
     }
 
-    public void addFeature(Feature feature) {
+    public void add(Feature feature) {
         if (feature == null) return;
 
         featuresPosition.put(feature.getPosition(), feature);
@@ -39,17 +42,33 @@ public class FeatureCollection {
 
         featuresName.get(feature.getName()).add(feature);
 
-        if (!featuresCategory.containsKey(feature.getType()))
-            featuresCategory.put(feature.getType(), new HashSet<>());
+        if (!featuresCategory.containsKey(feature.getCategory()))
+            featuresCategory.put(feature.getCategory(), new HashSet<>());
 
-        featuresCategory.get(feature.getType()).add(feature);
+        featuresCategory.get(feature.getCategory()).add(feature);
     }
 
-    public void removeFeature(Feature feature) {
+    public void remove(Feature feature) {
         if (feature == null) return;
 
         featuresPosition.remove(feature.getPosition());
-        featuresCategory.get(feature.getType()).remove(feature);
+        featuresCategory.get(feature.getCategory()).remove(feature);
         featuresName.get(feature.getName()).remove(feature);
+    }
+
+    public void addSelectedFeature(Feature feature) {
+        selectedFeatures.add(feature);
+    }
+
+    public void addSelectedFeature(Collection<Feature> features) {
+        selectedFeatures.addAll(features);
+    }
+
+    public void removeSelectedFeature(Feature feature) {
+        selectedFeatures.remove(feature);
+    }
+
+    public HashSet<Feature> getSelectedFeatures() {
+        return selectedFeatures;
     }
 }
