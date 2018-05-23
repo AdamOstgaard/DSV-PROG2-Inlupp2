@@ -11,6 +11,7 @@ public class FeatureHandler implements IMapIsReadyListener, MouseListener {
     private FeatureCollection featureCollection;
 
     public FeatureHandler() {
+        featureCollection = new FeatureCollection();
         features = new ArrayList<Feature>();
     }
 
