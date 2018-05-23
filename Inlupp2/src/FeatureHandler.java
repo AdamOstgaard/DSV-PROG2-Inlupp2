@@ -1,6 +1,4 @@
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -9,6 +7,8 @@ public class FeatureHandler implements IMapIsReadyListener, MouseListener {
     private Map map;
     private Dimension clickBoundries;
     private ArrayList features;
+    private ArrayList<FeatureCategory> categories;
+    private FeatureCollection featureCollection;
 
     public FeatureHandler() {
         features = new ArrayList<Feature>();
@@ -28,18 +28,15 @@ public class FeatureHandler implements IMapIsReadyListener, MouseListener {
 
     private void initiateBoundries() {
         clickBoundries = map.getMapDimension();
-        //JOptionPane.showMessageDialog(map, map.getMapDimension().width);
     }
 
     private void addFeature(MouseEvent e) {
         if (!(e.getX() < clickBoundries.getWidth() && e.getY() < clickBoundries.getHeight()))
             return;
 
-        Feature feature = new Feature(e.getX(), e.getY(), null);
+        Feature feature = new NamedFeature(new Position(e.getX(), e.getY()), null, "Buss");
         features.add(feature);
-        //feature.getTriangle().setAlignmentX(feature.getPoint().x);
-        //feature.getTriangle().setAlignmentY(feature.getPoint().y);
-        map.addFeature(feature);
+        map.add(feature);
         map.updateUI();
     }
 

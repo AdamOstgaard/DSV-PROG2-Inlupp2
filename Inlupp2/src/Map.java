@@ -13,6 +13,7 @@ public class Map extends JPanel{
     private ArrayList<Feature> features;
 
     public Map(){
+        super(null);
         features = new ArrayList<>();
         mapIsReadyListeners = new ArrayList<>();
         try{
@@ -33,9 +34,6 @@ public class Map extends JPanel{
     protected void paintComponent(Graphics graphics){
         super.paintComponent(graphics);
         setIsReady(graphics.drawImage(backgroundImage, 0, 0, null));
-        for (Feature feat : features) {
-            feat.getTriangle().paint(graphics);
-        }
     }
 
     private BufferedImage loadBackgroundImage() throws IOException{

@@ -1,33 +1,55 @@
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class Feature {
-    private Point point;
-    private FeatureType type;
-    private Triangle triangle;
+public abstract class Feature extends Triangle implements MouseListener {
+    private FeatureCategory type;
+    private boolean isSelected;
 
-    public Feature(int x, int y, FeatureType type) {
-        point = new Point(x, y);
-        triangle = new Triangle(50, Color.BLUE, point);
+    public Feature(Position position, FeatureCategory type) {
+        super(position, 100, Color.BLUE);
 
+        this.addMouseListener(this);
     }
 
-    public Point getPoint() {
-        return point;
-    }
-
-    public void setPoint(Point point) {
-        this.point = point;
-    }
-
-    public Triangle getTriangle() {
-        return triangle;
-    }
-
-    public FeatureType getType() {
+    public FeatureCategory getType() {
         return type;
     }
 
-    public void setType(FeatureType type) {
-        this.type = type;
+    private void onLeftClick(MouseEvent e) {
+        isSelected = true;
+        leftMouseButtonClicked(e);
+    }
+
+    protected abstract void leftMouseButtonClicked(MouseEvent e);
+
+    protected abstract void rightMouseButtonClicked(MouseEvent e);
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (e.getButton() == MouseEvent.BUTTON1)
+            onLeftClick(e);
+        else if (e.getButton() == MouseEvent.BUTTON3)
+            rightMouseButtonClicked(e);
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
     }
 }
