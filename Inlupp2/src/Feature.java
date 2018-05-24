@@ -9,6 +9,7 @@ public abstract class Feature implements MouseListener {
     private FeatureCategory category;
     private Marker marker;
     private ArrayList<SelectedStateListener> selectedStateEventListeners;
+    private FeatureState featureState;
 
     public Feature(Position position, FeatureCategory type, String name) {
         this.position = position;
@@ -16,6 +17,7 @@ public abstract class Feature implements MouseListener {
         this.category = type;
         this.marker = new Marker(this);
         this.selectedStateEventListeners = new ArrayList<>();
+        featureState = FeatureState.UNSELECTED;
         marker.addMouseListener(this);
     }
 
@@ -35,18 +37,26 @@ public abstract class Feature implements MouseListener {
         return marker;
     }
 
-    public boolean isSelected() {
-        return marker.isSelected();
+    public FeatureState getState() {
+        return featureState;
     }
 
-    public void setSelected(boolean b) {
-        if (b == isSelected()) return;
-        marker.setSelected(b);
-        selectedStateEventListeners.forEach(p -> p.selectedStateChanged(this, b));
+    public void setState(FeatureState featureState) {
+        if (featureState == getState()) return;
+
+        this.featureState = featureState;
+
+        marker.setSelected(featureState == FeatureState.SELECTED);
+        marker.setVisible(featureState != FeatureState.HIDDEN);
+
+        selectedStateEventListeners.forEach(p -> p.selectedStateChanged(this, featureState));
     }
 
     public void toggleSelect() {
-        setSelected(!isSelected());
+        if (getState() == FeatureState.SELECTED)
+            setState(FeatureState.UNSELECTED);
+        else if (getState() == FeatureState.UNSELECTED)
+            setState(FeatureState.SELECTED);
     }
 
     private void onLeftClick(MouseEvent e) {

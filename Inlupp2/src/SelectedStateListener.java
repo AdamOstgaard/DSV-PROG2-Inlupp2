@@ -1,3 +1,3 @@
 public interface SelectedStateListener {
-    void selectedStateChanged(Feature sender, boolean newState);
+    void selectedStateChanged(Feature sender, FeatureState newState);
 }

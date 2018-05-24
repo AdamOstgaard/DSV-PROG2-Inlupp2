@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -8,6 +9,8 @@ public class FeatureHandler implements IMapIsReadyListener, MouseListener, Selec
     private Map map;
     private Dimension clickBoundries;
     private FeatureCollection featureCollection;
+    private FeatureCategory newFeatureCategory;
+    private boolean newFeatureIsDescripted;
 
     public FeatureHandler() {
         featureCollection = new FeatureCollection();
@@ -16,7 +19,6 @@ public class FeatureHandler implements IMapIsReadyListener, MouseListener, Selec
     public void attach(Map map) {
         this.map = map;
         map.addMapIsReadyListener(this);
-        map.addMouseListener(this);
     }
 
     @Override
@@ -33,11 +35,18 @@ public class FeatureHandler implements IMapIsReadyListener, MouseListener, Selec
         if (!(e.getX() < clickBoundries.getWidth() && e.getY() < clickBoundries.getHeight()))
             return;
 
-        Feature feature = new NamedFeature(new Position(e.getX(), e.getY()), new FeatureCategory("buss", Color.BLUE), "Buss");
+        String name = "";
+        if (!newFeatureIsDescripted) {
+            name = JOptionPane.showInputDialog(map, "Enter name", "New named feature");
+        } else {
+
+        }
+        Feature feature = new NamedFeature(new Position(e.getX(), e.getY()), newFeatureCategory, name);
         feature.addSelectedStateEventListener(this);
         featureCollection.add(feature);
         map.add(feature.getMarker());
         map.updateUI();
+        map.removeMouseListener(this);
     }
 
     @Override
@@ -85,11 +94,24 @@ public class FeatureHandler implements IMapIsReadyListener, MouseListener, Selec
         return new ArrayList<Feature>(featureCollection.getSelectedFeatures());
     }
 
-    @Override
-    public void selectedStateChanged(Feature sender, boolean newState) {
-        if (newState)
-            featureCollection.addSelectedFeature(sender);
-        else
-            featureCollection.removeSelectedFeature(sender);
+    public ArrayList<Feature> getHiddenFeatures() {
+        return new ArrayList<Feature>(featureCollection.getHiddenFeatures());
     }
+
+    @Override
+    public void selectedStateChanged(Feature sender, FeatureState newState) {
+        featureCollection.removeSelectedFeature(sender);
+        featureCollection.removeHiddenFeature(sender);
+        if (newState == FeatureState.SELECTED)
+            featureCollection.addSelectedFeature(sender);
+        else if (newState == FeatureState.HIDDEN)
+            featureCollection.addHiddenFeature(sender);
+    }
+
+    public void startListenForNewFeature(FeatureCategory category, boolean isDescripted) {
+        map.addMouseListener(this);
+        newFeatureCategory = category;
+        newFeatureIsDescripted = isDescripted;
+    }
+
 }

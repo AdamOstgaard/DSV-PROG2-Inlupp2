@@ -8,12 +8,14 @@ public class FeatureCollection {
     private HashMap<String, HashSet<Feature>> featuresName;
     private HashMap<FeatureCategory, HashSet<Feature>> featuresCategory;
     private HashSet<Feature> selectedFeatures;
+    private HashSet<Feature> hiddenFeatures;
 
     public FeatureCollection() {
         featuresPosition = new HashMap<>();
         featuresName = new HashMap<>();
         featuresCategory = new HashMap<>();
         selectedFeatures = new HashSet<>();
+        hiddenFeatures = new HashSet<>();
     }
 
     public HashSet<Feature> getFeatures() {
@@ -71,4 +73,21 @@ public class FeatureCollection {
     public HashSet<Feature> getSelectedFeatures() {
         return selectedFeatures;
     }
+
+    public void addHiddenFeature(Feature feature) {
+        hiddenFeatures.add(feature);
+    }
+
+    public void addHiddenFeature(Collection<Feature> features) {
+        hiddenFeatures.addAll(features);
+    }
+
+    public void removeHiddenFeature(Feature feature) {
+        hiddenFeatures.remove(feature);
+    }
+
+    public HashSet<Feature> getHiddenFeatures() {
+        return hiddenFeatures;
+    }
+
 }
