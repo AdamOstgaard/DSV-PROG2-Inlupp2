@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -11,10 +12,10 @@ public abstract class Feature implements MouseListener {
     private ArrayList<SelectedStateListener> selectedStateEventListeners;
     private FeatureState featureState;
 
-    public Feature(Position position, FeatureCategory type, String name) {
+    public Feature(Position position, FeatureCategory category, String name) {
         this.position = position;
         this.name = name;
-        this.category = type;
+        this.category = category != null ? category : new FeatureCategory("Uncategorized", Color.BLACK);
         this.marker = new Marker(this);
         this.selectedStateEventListeners = new ArrayList<>();
         featureState = FeatureState.UNSELECTED;
@@ -61,10 +62,7 @@ public abstract class Feature implements MouseListener {
 
     private void onLeftClick(MouseEvent e) {
         toggleSelect();
-        leftMouseButtonClicked(e);
     }
-
-    protected abstract void leftMouseButtonClicked(MouseEvent e);
 
     protected abstract void rightMouseButtonClicked(MouseEvent e);
 

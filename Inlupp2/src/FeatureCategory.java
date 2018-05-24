@@ -14,7 +14,7 @@ public class FeatureCategory {
     }
 
     public Color getColor() {
-        return color;
+        return color != null ? color : Color.BLACK;
     }
 
     @Override

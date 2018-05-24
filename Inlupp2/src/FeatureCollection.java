@@ -56,6 +56,7 @@ public class FeatureCollection {
         featuresPosition.remove(feature.getPosition());
         featuresCategory.get(feature.getCategory()).remove(feature);
         featuresName.get(feature.getName()).remove(feature);
+        selectedFeatures.remove(feature);
     }
 
     public void addSelectedFeature(Feature feature) {

@@ -8,12 +8,7 @@ public class NamedFeature extends Feature {
     }
 
     @Override
-    protected void leftMouseButtonClicked(MouseEvent e) {
-
-    }
-
-    @Override
     protected void rightMouseButtonClicked(MouseEvent e) {
-        JOptionPane.showMessageDialog(getMarker(), getName() + "(" + getPosition().toString() + ")");
+        JOptionPane.showMessageDialog(getMarker(), "name: " + getName() + "(" + getPosition().toString() + ")");
     }
 }
