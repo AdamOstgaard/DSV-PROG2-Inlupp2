@@ -11,4 +11,13 @@ public class NamedFeature extends Feature {
     protected void rightMouseButtonClicked(MouseEvent e) {
         JOptionPane.showMessageDialog(getMarker(), "name: " + getName() + "(" + getPosition().toString() + ")");
     }
+
+    @Override
+    public String serialize() {
+        return String.format("Described,%1$s,%2$d,%3$d,%4$s",
+                getCategory().getName(),
+                getPosition().getX(),
+                getPosition().getY(),
+                getName());
+    }
 }

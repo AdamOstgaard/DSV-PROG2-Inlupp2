@@ -2,8 +2,9 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class Map extends JPanel {
@@ -11,14 +12,10 @@ public class Map extends JPanel {
     private boolean isReady;
     private ArrayList<IMapIsReadyListener> mapIsReadyListeners;
 
-    public Map() {
+    public Map(File imageFile) throws IOException {
         super(null);
         mapIsReadyListeners = new ArrayList<>();
-        try {
-            backgroundImage = loadBackgroundImage();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, e.getMessage());
-        }
+        backgroundImage = loadBackgroundImage(imageFile);
         this.setPreferredSize(getMapDimension());
     }
 
@@ -28,11 +25,14 @@ public class Map extends JPanel {
         setIsReady(graphics.drawImage(backgroundImage, 0, 0, null));
     }
 
-    private BufferedImage loadBackgroundImage() throws IOException {
+    private BufferedImage loadBackgroundImage(File file) throws IOException {
         try {
-            return ImageIO.read(new URL("http://oi65.tinypic.com/2zz7ndz.jpg"));
+            BufferedImage image = ImageIO.read(file);
+            if (image == null)
+                throw new FileNotFoundException("File not found or is not image");
+            return image;
         } catch (Exception e) {
-            throw (new IOException("Map could not be downloaded. Please check map Path and internet connection.", e));
+            throw (new IOException("Map could not be loaded, make sure it is an image file!", e));
         }
     }
 

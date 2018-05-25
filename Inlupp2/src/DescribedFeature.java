@@ -32,4 +32,14 @@ public class DescribedFeature extends NamedFeature {
 
         JOptionPane.showMessageDialog(getMarker(), panel);
     }
+
+    @Override
+    public String serialize() {
+        return String.format("Described,%1$s,%2$d,%3$d,%4$s,%5$s",
+                getCategory().getName(),
+                getPosition().getX(),
+                getPosition().getY(),
+                getName(),
+                getDescription());
+    }
 }

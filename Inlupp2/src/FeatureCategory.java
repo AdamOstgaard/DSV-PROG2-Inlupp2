@@ -1,6 +1,11 @@
 import java.awt.*;
 
-public class FeatureCategory {
+public enum FeatureCategory {
+    BUS("Bus", Color.RED),
+    TRAIN("Train", Color.GREEN),
+    UNDERGROUND("Underground", Color.BLUE),
+    NONE("None", Color.BLACK);
+
     private String name;
     private Color color;
 
@@ -14,7 +19,7 @@ public class FeatureCategory {
     }
 
     public Color getColor() {
-        return color != null ? color : Color.BLACK;
+        return color;
     }
 
     @Override

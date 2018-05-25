@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -8,12 +10,126 @@ public class Gui extends JFrame{
     private FeatureHandler featureHandler;
 
     public Gui(){
-        map = new Map();
+        initialize();
+    }
+
+    private void search(String text) {
+        if (featureHandler == null || map == null) return;
+
+        if (text.isEmpty()) return;
+
+        featureHandler.getSelectedFeatures().forEach(p -> p.setState(FeatureState.UNSELECTED));
+
+        HashSet<Feature> features = featureHandler.getFeatures(text);
+
+        if (features != null && !features.isEmpty())
+            features.forEach(p -> p.setState(FeatureState.SELECTED));
+    }
+
+    private void hideCategory(FeatureCategory category) {
+        if (featureHandler == null || map == null) return;
+
+        if (category == null) return;
+
+        HashSet<Feature> features = featureHandler.getFeatures(category);
+
+        if (features != null && !features.isEmpty())
+            features.forEach(p -> p.setState(FeatureState.HIDDEN));
+    }
+
+    private void newFeature(FeatureCategory category, boolean isDescribed) {
+        if (featureHandler == null || map == null) return;
+
+        featureHandler.startListenForNewFeature(category, isDescribed);
+    }
+
+    private void removeFeatures() {
+        if (featureHandler == null || map == null) return;
+
+        ArrayList<Feature> features = featureHandler.getSelectedFeatures();
+
+        if (features != null && !features.isEmpty())
+            featureHandler.removeFeatures(features);
+
+    }
+
+    private void selectCoordinates() {
+        if (featureHandler == null || map == null) return;
+
+        JPanel panel = new JPanel();
+
+        JLabel xLabel = new JLabel("x:");
+        JLabel yLabel = new JLabel("y:");
+
+        JTextField xText = new JTextField();
+        JTextField yText = new JTextField();
+
+        panel.add(xLabel);
+        panel.add(xText);
+        panel.add(yLabel);
+        panel.add(yText);
+
+        JOptionPane.showMessageDialog(this, panel, "Enter Coordinates", JOptionPane.QUESTION_MESSAGE);
+
+        String x = xText.getText();
+        String y = yText.getText();
+
+        Position position;
+        try {
+            position = new Position(Integer.parseInt(x), Integer.parseInt(y));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Invalid coordinates");
+            return;
+        }
+
+        Feature feature = featureHandler.getFeature(position);
+
+        if (feature == null) {
+            JOptionPane.showMessageDialog(this, "No feature on selected coordinate");
+            return;
+        }
+
+        ArrayList<Feature> selectedFeatures = featureHandler.getSelectedFeatures();
+
+        if (selectedFeatures != null && !selectedFeatures.isEmpty())
+            selectedFeatures.forEach(f -> f.setState(FeatureState.UNSELECTED));
+
+        feature.setState(FeatureState.SELECTED);
+    }
+
+    private void showLoadMapDialog() {
+        JFileChooser filePicker = new JFileChooser();
+
+        if (filePicker.showOpenDialog(this) != JFileChooser.APPROVE_OPTION)
+            return;
+
+        File selectedMap = filePicker.getSelectedFile();
+        loadMap(selectedMap);
+    }
+
+    private void loadMap(File selectedMap) {
+        featureHandler = null;
+        map = null;
+
+        try {
+            map = new Map(selectedMap);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+            return;
+        }
+
         featureHandler = new FeatureHandler();
         featureHandler.attach(map);
 
+        setMinimumSize(new Dimension((int) map.getMapDimension().getWidth() + 100, map.getHeight() + 50));
+        setPreferredSize(new Dimension((int) map.getMapDimension().getWidth() + 100, map.getHeight() + 50));
+
+        add(map, BorderLayout.WEST);
+
+    }
+
+    private void initialize() {
         setLayout(new BorderLayout());
-        setMinimumSize(new Dimension(map.getMapDimension()));
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -21,11 +137,20 @@ public class Gui extends JFrame{
         JPanel South = new JPanel();
         JPanel East = new JPanel(new GridLayout(2, 1));
 
+        JMenuItem loadMapItem = new JMenuItem("Load map");
+        loadMapItem.addActionListener((ActionEvent -> showLoadMapDialog()));
+
+        JMenu archiveMenu = new JMenu("Archive");
+        archiveMenu.add(loadMapItem);
+
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.add(archiveMenu);
+
         JList<FeatureCategory> categories = new JList<>(
                 new FeatureCategory[]{
-                        new FeatureCategory("Buss", Color.CYAN),
-                        new FeatureCategory("Underground", Color.RED),
-                        new FeatureCategory("Train", Color.green)
+                        FeatureCategory.BUS,
+                        FeatureCategory.TRAIN,
+                        FeatureCategory.UNDERGROUND
                 });
 
         JRadioButton namedPlace = new JRadioButton("Named place");
@@ -68,82 +193,9 @@ public class Gui extends JFrame{
         north.add(removeButton);
         north.add(coordinates);
 
-        add(map, BorderLayout.WEST);
+        setJMenuBar(menuBar);
         add(East, BorderLayout.EAST);
         add(north, BorderLayout.NORTH);
-    }
 
-    private void search(String text) {
-        if (text.isEmpty()) return;
-
-        featureHandler.getSelectedFeatures().forEach(p -> p.setState(FeatureState.UNSELECTED));
-
-        HashSet<Feature> features = featureHandler.getFeatures(text);
-
-        if (features != null && !features.isEmpty())
-            features.forEach(p -> p.setState(FeatureState.SELECTED));
-    }
-
-    private void hideCategory(FeatureCategory category) {
-        if (category == null) return;
-
-        HashSet<Feature> features = featureHandler.getFeatures(category);
-
-        if (features != null && !features.isEmpty())
-            features.forEach(p -> p.setState(FeatureState.HIDDEN));
-    }
-
-    private void newFeature(FeatureCategory category, boolean isDescribed) {
-        featureHandler.startListenForNewFeature(category, isDescribed);
-    }
-
-    private void removeFeatures() {
-        ArrayList<Feature> features = featureHandler.getSelectedFeatures();
-
-        if (features != null && !features.isEmpty())
-            featureHandler.removeFeatures(features);
-
-    }
-
-    private void selectCoordinates() {
-        JPanel panel = new JPanel();
-
-        JLabel xLabel = new JLabel("x:");
-        JLabel yLabel = new JLabel("y:");
-
-        JTextField xText = new JTextField();
-        JTextField yText = new JTextField();
-
-        panel.add(xLabel);
-        panel.add(xText);
-        panel.add(yLabel);
-        panel.add(yText);
-
-        JOptionPane.showMessageDialog(this, panel, "Enter Coordinates", JOptionPane.QUESTION_MESSAGE);
-
-        String x = xText.getText();
-        String y = yText.getText();
-
-        Position position;
-        try {
-            position = new Position(Integer.parseInt(x), Integer.parseInt(y));
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Invalid coordinates");
-            return;
-        }
-
-        Feature feature = featureHandler.getFeature(position);
-
-        if (feature == null) {
-            JOptionPane.showMessageDialog(this, "No feature on selected coordinate");
-            return;
-        }
-
-        ArrayList<Feature> selectedFeatures = featureHandler.getSelectedFeatures();
-
-        if (selectedFeatures != null && !selectedFeatures.isEmpty())
-            selectedFeatures.forEach(f -> f.setState(FeatureState.UNSELECTED));
-
-        feature.setState(FeatureState.SELECTED);
     }
 }
