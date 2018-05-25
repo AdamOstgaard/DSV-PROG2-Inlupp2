@@ -13,6 +13,16 @@ public class FeatureHandler implements IMapIsReadyListener, MouseListener, Selec
     private FeatureCategory newFeatureCategory;
     private boolean newFeatureIsDescribed;
 
+    private boolean hasStagedChanges;
+
+    public boolean isHasStagedChanges() {
+        return hasStagedChanges;
+    }
+
+    public void setHasStagedChanges(boolean hasStagedChanges) {
+        this.hasStagedChanges = hasStagedChanges;
+    }
+
     public FeatureHandler() {
         featureCollection = new FeatureCollection();
     }
@@ -51,13 +61,19 @@ public class FeatureHandler implements IMapIsReadyListener, MouseListener, Selec
                 createDescribedFeature(position, newFeatureCategory) :
                 createNamedFeature(position, newFeatureCategory);
 
+        add(feature);
+
+        map.removeMouseListener(this);
+        map.setCursor(Cursor.getDefaultCursor());
+    }
+
+    private void add(Feature feature) {
         feature.addSelectedStateEventListener(this);
         featureCollection.add(feature);
 
         map.add(feature.getMarker());
         map.updateUI();
-        map.removeMouseListener(this);
-        map.setCursor(Cursor.getDefaultCursor());
+        hasStagedChanges = true;
     }
 
     private DescribedFeature createDescribedFeature(Position position, FeatureCategory category) {
@@ -164,7 +180,42 @@ public class FeatureHandler implements IMapIsReadyListener, MouseListener, Selec
             map.remove(feature.getMarker());
         }
 
+        hasStagedChanges = true;
+
         map.updateUI();
     }
 
+    public ArrayList<String> serializeAllFeatures() {
+        ArrayList<String> serializedFeatures = new ArrayList<>();
+
+        HashSet<Feature> features = getFeatures();
+        if (features != null && !features.isEmpty())
+            features.forEach(f -> serializedFeatures.add(f.serialize()));
+        return serializedFeatures;
+    }
+
+    public void removeAllFeatures() {
+        removeFeatures(getFeatures());
+    }
+
+    public void deserializeAndLoadFeatures(ArrayList<String> serializedFeatures) {
+        if (serializedFeatures == null || serializedFeatures.isEmpty())
+            return;
+
+        removeAllFeatures();
+
+        int featuresLoaded = 0;
+        int featuresFailedToLoad = 0;
+
+        for (String serializedFeature : serializedFeatures) {
+            try {
+                add(Feature.deserialize(serializedFeature));
+                featuresLoaded++;
+            } catch (Exception e) {
+                featuresFailedToLoad++;
+            }
+        }
+
+        JOptionPane.showMessageDialog(map, "Features loaded: " + featuresLoaded + "\nfeatures failed to load: " + featuresFailedToLoad);
+    }
 }

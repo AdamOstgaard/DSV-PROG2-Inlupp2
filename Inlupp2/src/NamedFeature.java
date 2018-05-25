@@ -14,7 +14,7 @@ public class NamedFeature extends Feature {
 
     @Override
     public String serialize() {
-        return String.format("Described,%1$s,%2$d,%3$d,%4$s",
+        return String.format("Named,%1$s,%2$d,%3$d,%4$s",
                 getCategory().getName(),
                 getPosition().getX(),
                 getPosition().getY(),
