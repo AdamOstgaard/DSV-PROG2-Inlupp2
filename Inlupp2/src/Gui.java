@@ -60,6 +60,31 @@ public class Gui extends JFrame{
     private void selectCoordinates() {
         if (featureHandler == null || map == null) return;
 
+        Position position;
+
+        try {
+            position = showSelectCoordinatesDialog();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Invalid Input");
+            return;
+        }
+
+        Feature feature = featureHandler.getFeature(position);
+
+        if (feature == null) {
+            JOptionPane.showMessageDialog(this, "No feature on selected coordinate");
+            return;
+        }
+
+        ArrayList<Feature> selectedFeatures = featureHandler.getSelectedFeatures();
+
+        if (selectedFeatures != null && !selectedFeatures.isEmpty())
+            selectedFeatures.forEach(f -> f.setState(FeatureState.UNSELECTED));
+
+        feature.setState(FeatureState.SELECTED);
+    }
+
+    private Position showSelectCoordinatesDialog() {
         JPanel panel = new JPanel();
 
         JLabel xLabel = new JLabel("x:");
@@ -78,27 +103,7 @@ public class Gui extends JFrame{
         String x = xText.getText();
         String y = yText.getText();
 
-        Position position;
-        try {
-            position = new Position(Integer.parseInt(x), Integer.parseInt(y));
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Invalid coordinates");
-            return;
-        }
-
-        Feature feature = featureHandler.getFeature(position);
-
-        if (feature == null) {
-            JOptionPane.showMessageDialog(this, "No feature on selected coordinate");
-            return;
-        }
-
-        ArrayList<Feature> selectedFeatures = featureHandler.getSelectedFeatures();
-
-        if (selectedFeatures != null && !selectedFeatures.isEmpty())
-            selectedFeatures.forEach(f -> f.setState(FeatureState.UNSELECTED));
-
-        feature.setState(FeatureState.SELECTED);
+        return new Position(Integer.parseInt(x), Integer.parseInt(y));
     }
 
     private void showLoadMapDialog() {
