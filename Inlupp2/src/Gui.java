@@ -136,10 +136,17 @@ public class Gui extends JFrame {
         featureHandler = new FeatureHandler();
         featureHandler.attach(map);
 
-        setMinimumSize(new Dimension((int) map.getMapDimension().getWidth() + 150, (int) map.getMapDimension().getHeight() + 50));
-        setPreferredSize(new Dimension((int) map.getMapDimension().getWidth() + 150, (int) map.getMapDimension().getHeight() + 50));
+        //setMinimumSize(new Dimension((int) map.getMapDimension().getWidth() + 150, (int) map.getMapDimension().getHeight() + 50));
+        //setPreferredSize(new Dimension((int) map.getMapDimension().getWidth() + 150, (int) map.getMapDimension().getHeight() + 50));
 
-        add(map, BorderLayout.WEST);
+        setMinimumSize(null);
+        setPreferredSize(null);
+
+        JScrollPane scrollPane = new JScrollPane(map);
+        scrollPane.setVisible(true);
+        //scrollPane.add(map);
+
+        add(scrollPane);
         SwingUtilities.updateComponentTreeUI(this);
     }
 
