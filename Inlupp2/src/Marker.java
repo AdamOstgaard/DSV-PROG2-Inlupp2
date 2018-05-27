@@ -18,7 +18,7 @@ public class Marker extends JComponent {
         setPreferredSize(new Dimension(side, side));
         setBounds(getPositionOffset().getX(), getPositionOffset().getY(), side, side);
 
-        drawPath(side);
+        drawPath();
     }
 
     public boolean isSelected() {
@@ -30,7 +30,7 @@ public class Marker extends JComponent {
         repaint();
     }
 
-    private void drawPath(int side) {
+    private void drawPath() {
         double yOffset = (side * 0.5);
         double startX = (side / 2.0) * (1 - 1 / Math.sqrt(3));
         double startY = (3.0 * side / 4.0);
@@ -63,5 +63,4 @@ public class Marker extends JComponent {
     private Position getPositionOffset() {
         return new Position(owner.getPosition().getX() - side / 2, (int) (owner.getPosition().getY() - side / 1.25));
     }
-
 }

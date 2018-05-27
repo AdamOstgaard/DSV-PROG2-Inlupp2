@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 public abstract class Feature implements MouseListener {
 
-    private Position position;
-    private String name;
-    private FeatureCategory category;
-    private Marker marker;
-    private ArrayList<SelectedStateListener> selectedStateEventListeners;
+    private final Position position;
+    private final String name;
+    private final FeatureCategory category;
+    private final Marker marker;
+    private final ArrayList<SelectedStateListener> selectedStateEventListeners;
     private FeatureState featureState;
 
     public Feature(Position position, FeatureCategory category, String name) {
@@ -19,6 +19,55 @@ public abstract class Feature implements MouseListener {
         this.selectedStateEventListeners = new ArrayList<>();
         featureState = FeatureState.UNSELECTED;
         marker.addMouseListener(this);
+    }
+
+    public static Feature deserialize(String serializedFeature) throws Exception {
+        final String[] properties = serializedFeature.split(",");
+
+        if (properties.length < 5)
+            throw new Exception("Too few fields to be considered fit for deserialization");
+
+        String name = properties[4];
+        FeatureCategory category = parseFeatureCategory(properties[1]);
+        Position position = parsePosition(properties[2], properties[3]);
+
+        return (properties[0].equals("Described") && properties.length > 5)
+                ? new DescribedFeature(position, category, name, properties[5])
+                : new NamedFeature(position, category, name);
+    }
+
+    private static FeatureCategory parseFeatureCategory(String categoryString) throws Exception {
+        FeatureCategory category;
+
+        switch (categoryString) {
+            case "Bus":
+                category = FeatureCategory.BUS;
+                break;
+            case "Train":
+                category = FeatureCategory.TRAIN;
+                break;
+            case "Underground":
+                category = FeatureCategory.UNDERGROUND;
+                break;
+            case "None":
+                category = FeatureCategory.NONE;
+                break;
+            default:
+                throw new Exception("Category does not exist");
+        }
+        return category;
+    }
+
+    private static Position parsePosition(String xStr, String yStr) throws Exception {
+        Position position;
+        try {
+            int x = Integer.parseInt(xStr);
+            int y = Integer.parseInt(yStr);
+            position = new Position(x, y);
+        } catch (Exception e) {
+            throw new Exception("Unable to parse coordinates", e);
+        }
+        return position;
     }
 
     public Position getPosition() {
@@ -95,47 +144,6 @@ public abstract class Feature implements MouseListener {
 
     public void addSelectedStateEventListener(SelectedStateListener listener) {
         selectedStateEventListeners.add(listener);
-    }
-
-    public static Feature deserialize(String serializedFeature) throws Exception {
-        final String[] properties = serializedFeature.split(",");
-
-        if (properties.length < 5)
-            throw new Exception("Too few fields to be considered fit for deserialization");
-
-        String name;
-        FeatureCategory category;
-        Position position;
-
-        name = properties[4];
-        switch (properties[1]) {
-            case "Bus":
-                category = FeatureCategory.BUS;
-                break;
-            case "Train":
-                category = FeatureCategory.TRAIN;
-                break;
-            case "Underground":
-                category = FeatureCategory.UNDERGROUND;
-                break;
-            case "None":
-                category = FeatureCategory.NONE;
-                break;
-            default:
-                throw new Exception("Category does not exist");
-        }
-
-        try {
-            int x = Integer.parseInt(properties[2]);
-            int y = Integer.parseInt(properties[3]);
-            position = new Position(x, y);
-        } catch (Exception e) {
-            throw new Exception("Unable to parse coordinates", e);
-        }
-
-        return (properties[0].equals("Described") && properties.length > 5)
-                ? new DescribedFeature(position, category, name, properties[5])
-                : new NamedFeature(position, category, name);
     }
 
     public abstract String serialize();

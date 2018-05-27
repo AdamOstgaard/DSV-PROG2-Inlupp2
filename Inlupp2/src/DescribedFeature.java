@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 
 public class DescribedFeature extends NamedFeature {
-    private String description;
+    private final String description;
 
     public DescribedFeature(Position position, FeatureCategory type, String name, String description) {
         super(position, type, name);

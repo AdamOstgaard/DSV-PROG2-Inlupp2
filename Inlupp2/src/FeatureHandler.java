@@ -7,13 +7,17 @@ import java.util.Collection;
 import java.util.HashSet;
 
 public class FeatureHandler implements IMapIsReadyListener, MouseListener, SelectedStateListener {
+    private final FeatureCollection featureCollection;
     private Map map;
-    private Dimension clickBoundries;
-    private FeatureCollection featureCollection;
+    private Dimension clickBoundaries;
     private FeatureCategory newFeatureCategory;
     private boolean newFeatureIsDescribed;
 
     private boolean hasStagedChanges;
+
+    public FeatureHandler() {
+        featureCollection = new FeatureCollection();
+    }
 
     public boolean isHasStagedChanges() {
         return hasStagedChanges;
@@ -21,10 +25,6 @@ public class FeatureHandler implements IMapIsReadyListener, MouseListener, Selec
 
     public void setHasStagedChanges(boolean hasStagedChanges) {
         this.hasStagedChanges = hasStagedChanges;
-    }
-
-    public FeatureHandler() {
-        featureCollection = new FeatureCollection();
     }
 
     public void attach(Map map) {
@@ -35,11 +35,11 @@ public class FeatureHandler implements IMapIsReadyListener, MouseListener, Selec
     @Override
     public void readyStateChanged(boolean isReady) {
         if (isReady)
-            initiateBoundries();
+            initiateBoundaries();
     }
 
-    private void initiateBoundries() {
-        clickBoundries = map.getMapDimension();
+    private void initiateBoundaries() {
+        clickBoundaries = map.getMapDimension();
     }
 
     private void addFeature(MouseEvent e) {
@@ -103,7 +103,7 @@ public class FeatureHandler implements IMapIsReadyListener, MouseListener, Selec
     }
 
     private boolean isWithinMap(Position position) {
-        return (position.getX() < clickBoundries.getWidth() && position.getY() < clickBoundries.getHeight());
+        return (position.getX() < clickBoundaries.getWidth() && position.getY() < clickBoundaries.getHeight());
     }
 
     @Override
@@ -144,11 +144,11 @@ public class FeatureHandler implements IMapIsReadyListener, MouseListener, Selec
     }
 
     public ArrayList<Feature> getSelectedFeatures() {
-        return new ArrayList<Feature>(featureCollection.getSelectedFeatures());
+        return new ArrayList<>(featureCollection.getSelectedFeatures());
     }
 
     public ArrayList<Feature> getHiddenFeatures() {
-        return new ArrayList<Feature>(featureCollection.getHiddenFeatures());
+        return new ArrayList<>(featureCollection.getHiddenFeatures());
     }
 
     @Override
@@ -158,7 +158,6 @@ public class FeatureHandler implements IMapIsReadyListener, MouseListener, Selec
 
         if (newState == FeatureState.SELECTED)
             featureCollection.addSelectedFeature(sender);
-
         else if (newState == FeatureState.HIDDEN)
             featureCollection.addHiddenFeature(sender);
     }
@@ -176,8 +175,10 @@ public class FeatureHandler implements IMapIsReadyListener, MouseListener, Selec
             return;
 
         for (Feature feature : features) {
-            featureCollection.remove(feature);
-            map.remove(feature.getMarker());
+            if (feature != null) {
+                featureCollection.remove(feature);
+                map.remove(feature.getMarker());
+            }
         }
 
         hasStagedChanges = true;

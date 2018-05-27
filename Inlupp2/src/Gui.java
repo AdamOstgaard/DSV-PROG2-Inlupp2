@@ -9,11 +9,11 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class Gui extends JFrame{
+public class Gui extends JFrame {
     private Map map;
     private FeatureHandler featureHandler;
 
-    public Gui(){
+    public Gui() {
         initialize();
     }
 
@@ -230,7 +230,7 @@ public class Gui extends JFrame{
         JPanel East = new JPanel(new GridLayout(2, 1));
 
         JMenuItem loadMapItem = new JMenuItem("Load map");
-        loadMapItem.addActionListener((ActionEvent -> showLoadMapDialog()));
+        loadMapItem.addActionListener(ActionEvent -> showLoadMapDialog());
 
         JMenuItem saveFeaturesItem = new JMenuItem("Save features");
         saveFeaturesItem.addActionListener(ActionEvent -> showSaveFeaturesDialog());

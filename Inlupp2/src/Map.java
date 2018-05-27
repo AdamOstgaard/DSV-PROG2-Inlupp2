@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Map extends JPanel {
+    private final ArrayList<IMapIsReadyListener> mapIsReadyListeners;
     private Image backgroundImage;
     private boolean isReady;
-    private ArrayList<IMapIsReadyListener> mapIsReadyListeners;
 
     public Map(File imageFile) throws IOException {
         super(null);

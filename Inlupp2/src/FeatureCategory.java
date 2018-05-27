@@ -6,8 +6,8 @@ public enum FeatureCategory {
     UNDERGROUND("Underground", Color.BLUE),
     NONE("None", Color.BLACK);
 
-    private String name;
-    private Color color;
+    private final String name;
+    private final Color color;
 
     FeatureCategory(String name, Color color) {
         this.name = name;

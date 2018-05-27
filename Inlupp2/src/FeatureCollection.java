@@ -4,11 +4,11 @@ import java.util.HashSet;
 
 public class FeatureCollection {
 
-    private HashMap<Position, Feature> featuresPosition;
-    private HashMap<String, HashSet<Feature>> featuresName;
-    private HashMap<FeatureCategory, HashSet<Feature>> featuresCategory;
-    private HashSet<Feature> selectedFeatures;
-    private HashSet<Feature> hiddenFeatures;
+    private final HashMap<Position, Feature> featuresPosition;
+    private final HashMap<String, HashSet<Feature>> featuresName;
+    private final HashMap<FeatureCategory, HashSet<Feature>> featuresCategory;
+    private final HashSet<Feature> selectedFeatures;
+    private final HashSet<Feature> hiddenFeatures;
 
     public FeatureCollection() {
         featuresPosition = new HashMap<>();
@@ -51,7 +51,7 @@ public class FeatureCollection {
     }
 
     public void remove(Feature feature) {
-        if (feature == null) return;
+        if (feature == null) throw new NullPointerException();
 
         featuresPosition.remove(feature.getPosition());
         featuresCategory.get(feature.getCategory()).remove(feature);

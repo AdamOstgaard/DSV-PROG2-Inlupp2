@@ -22,8 +22,7 @@ public class Position {
 
     @Override
     public boolean equals(Object position) {
-        return position != null
-                && position instanceof Position
+        return position instanceof Position
                 && this.getX() == ((Position) position).getX()
                 && this.getY() == ((Position) position).getY();
     }
