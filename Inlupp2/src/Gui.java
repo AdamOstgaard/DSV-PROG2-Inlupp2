@@ -136,8 +136,8 @@ public class Gui extends JFrame {
         featureHandler = new FeatureHandler();
         featureHandler.attach(map);
 
-        setMinimumSize(new Dimension((int) map.getMapDimension().getWidth() + 100, (int) map.getMapDimension().getHeight() + 50));
-        setPreferredSize(new Dimension((int) map.getMapDimension().getWidth() + 130, (int) map.getMapDimension().getHeight() + 50));
+        setMinimumSize(new Dimension((int) map.getMapDimension().getWidth() + 150, (int) map.getMapDimension().getHeight() + 50));
+        setPreferredSize(new Dimension((int) map.getMapDimension().getWidth() + 150, (int) map.getMapDimension().getHeight() + 50));
 
         add(map, BorderLayout.WEST);
         SwingUtilities.updateComponentTreeUI(this);
@@ -204,6 +204,10 @@ public class Gui extends JFrame {
                 JOptionPane.YES_NO_OPTION);
     }
 
+    private void hideSelected() {
+        featureHandler.getSelectedFeatures().forEach(f -> f.setState(FeatureState.HIDDEN));
+    }
+
     private void initialize() {
         setLayout(new BorderLayout());
         setVisible(true);
@@ -222,8 +226,8 @@ public class Gui extends JFrame {
         });
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        setPreferredSize(new Dimension(800, 500));
-        setMinimumSize(new Dimension(800, 500));
+        setPreferredSize(new Dimension(1000, 500));
+        setMinimumSize(new Dimension(1000, 500));
 
         JPanel north = new JPanel();
         JPanel South = new JPanel();
@@ -280,6 +284,9 @@ public class Gui extends JFrame {
         JButton coordinates = new JButton("Coordinates");
         coordinates.addActionListener(ActionEvent -> selectCoordinates());
 
+        JButton hideButton = new JButton("Hide");
+        hideButton.addActionListener(ActionEvent -> hideSelected());
+
         East.add(categories);
         East.add(hideCategoryButton);
 
@@ -296,6 +303,7 @@ public class Gui extends JFrame {
         north.add(newButton);
         north.add(removeButton);
         north.add(coordinates);
+        north.add(hideButton);
 
         setJMenuBar(menuBar);
         add(East, BorderLayout.EAST);
