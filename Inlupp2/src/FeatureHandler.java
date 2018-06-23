@@ -15,19 +15,19 @@ public class FeatureHandler implements IMapIsReadyListener, MouseListener, Selec
 
     private boolean hasStagedChanges;
 
-    public FeatureHandler() {
+    FeatureHandler() {
         featureCollection = new FeatureCollection();
     }
 
-    public boolean isHasStagedChanges() {
+    boolean isHasStagedChanges() {
         return hasStagedChanges;
     }
 
-    public void setHasStagedChanges(boolean hasStagedChanges) {
+    void setHasStagedChanges(boolean hasStagedChanges) {
         this.hasStagedChanges = hasStagedChanges;
     }
 
-    public void attach(Map map) {
+    void attach(Map map) {
         this.map = map;
         map.addMapIsReadyListener(this);
     }
@@ -127,27 +127,27 @@ public class FeatureHandler implements IMapIsReadyListener, MouseListener, Selec
     public void mouseExited(MouseEvent e) {
     }
 
-    public Feature getFeature(Position position) {
+    Feature getFeature(Position position) {
         return featureCollection.getFeature(position);
     }
 
-    public HashSet<Feature> getFeatures(FeatureCategory category) {
+    HashSet<Feature> getFeatures(FeatureCategory category) {
         return featureCollection.getFeatures(category);
     }
 
-    public HashSet<Feature> getFeatures() {
+    HashSet<Feature> getFeatures() {
         return featureCollection.getFeatures();
     }
 
-    public HashSet<Feature> getFeatures(String name) {
+    HashSet<Feature> getFeatures(String name) {
         return featureCollection.getFeatures(name);
     }
 
-    public ArrayList<Feature> getSelectedFeatures() {
+    ArrayList<Feature> getSelectedFeatures() {
         return new ArrayList<>(featureCollection.getSelectedFeatures());
     }
 
-    public ArrayList<Feature> getHiddenFeatures() {
+    ArrayList<Feature> getHiddenFeatures() {
         return new ArrayList<>(featureCollection.getHiddenFeatures());
     }
 
@@ -162,7 +162,7 @@ public class FeatureHandler implements IMapIsReadyListener, MouseListener, Selec
             featureCollection.addHiddenFeature(sender);
     }
 
-    public void startListenForNewFeature(FeatureCategory category, boolean isDescripted) {
+    void startListenForNewFeature(FeatureCategory category, boolean isDescripted) {
         map.addMouseListener(this);
         map.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 
@@ -170,7 +170,7 @@ public class FeatureHandler implements IMapIsReadyListener, MouseListener, Selec
         newFeatureIsDescribed = isDescripted;
     }
 
-    public void removeFeatures(Collection<Feature> features) {
+    void removeFeatures(Collection<Feature> features) {
         if (features == null || features.isEmpty())
             return;
 
@@ -186,7 +186,7 @@ public class FeatureHandler implements IMapIsReadyListener, MouseListener, Selec
         map.updateUI();
     }
 
-    public ArrayList<String> serializeAllFeatures() {
+    ArrayList<String> serializeAllFeatures() {
         ArrayList<String> serializedFeatures = new ArrayList<>();
 
         HashSet<Feature> features = getFeatures();
@@ -195,11 +195,11 @@ public class FeatureHandler implements IMapIsReadyListener, MouseListener, Selec
         return serializedFeatures;
     }
 
-    public void removeAllFeatures() {
+    void removeAllFeatures() {
         removeFeatures(getFeatures());
     }
 
-    public void deserializeAndLoadFeatures(ArrayList<String> serializedFeatures) {
+    void deserializeAndLoadFeatures(ArrayList<String> serializedFeatures) {
         if (serializedFeatures == null || serializedFeatures.isEmpty())
             return;
 

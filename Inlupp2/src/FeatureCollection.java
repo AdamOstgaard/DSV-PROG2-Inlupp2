@@ -2,7 +2,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class FeatureCollection {
+class FeatureCollection {
 
     private final HashMap<Position, Feature> featuresPosition;
     private final HashMap<String, HashSet<Feature>> featuresName;
@@ -10,7 +10,7 @@ public class FeatureCollection {
     private final HashSet<Feature> selectedFeatures;
     private final HashSet<Feature> hiddenFeatures;
 
-    public FeatureCollection() {
+    FeatureCollection() {
         featuresPosition = new HashMap<>();
         featuresName = new HashMap<>();
         featuresCategory = new HashMap<>();
@@ -18,23 +18,23 @@ public class FeatureCollection {
         hiddenFeatures = new HashSet<>();
     }
 
-    public HashSet<Feature> getFeatures() {
+    HashSet<Feature> getFeatures() {
         return new HashSet<>(featuresPosition.values());
     }
 
-    public HashSet<Feature> getFeatures(FeatureCategory category) {
+    HashSet<Feature> getFeatures(FeatureCategory category) {
         return featuresCategory.get(category);
     }
 
-    public HashSet<Feature> getFeatures(String name) {
+    HashSet<Feature> getFeatures(String name) {
         return featuresName.get(name);
     }
 
-    public Feature getFeature(Position position) {
+    Feature getFeature(Position position) {
         return featuresPosition.get(position);
     }
 
-    public void add(Feature feature) {
+    void add(Feature feature) {
         if (feature == null) return;
 
         featuresPosition.put(feature.getPosition(), feature);
@@ -50,7 +50,7 @@ public class FeatureCollection {
         featuresCategory.get(feature.getCategory()).add(feature);
     }
 
-    public void remove(Feature feature) {
+    void remove(Feature feature) {
         if (feature == null) throw new NullPointerException();
 
         featuresPosition.remove(feature.getPosition());
@@ -59,7 +59,7 @@ public class FeatureCollection {
         selectedFeatures.remove(feature);
     }
 
-    public void addSelectedFeature(Feature feature) {
+    void addSelectedFeature(Feature feature) {
         selectedFeatures.add(feature);
     }
 
@@ -67,15 +67,15 @@ public class FeatureCollection {
         selectedFeatures.addAll(features);
     }
 
-    public void removeSelectedFeature(Feature feature) {
+    void removeSelectedFeature(Feature feature) {
         selectedFeatures.remove(feature);
     }
 
-    public HashSet<Feature> getSelectedFeatures() {
+    HashSet<Feature> getSelectedFeatures() {
         return selectedFeatures;
     }
 
-    public void addHiddenFeature(Feature feature) {
+    void addHiddenFeature(Feature feature) {
         hiddenFeatures.add(feature);
     }
 
@@ -83,11 +83,11 @@ public class FeatureCollection {
         hiddenFeatures.addAll(features);
     }
 
-    public void removeHiddenFeature(Feature feature) {
+    void removeHiddenFeature(Feature feature) {
         hiddenFeatures.remove(feature);
     }
 
-    public HashSet<Feature> getHiddenFeatures() {
+    HashSet<Feature> getHiddenFeatures() {
         return hiddenFeatures;
     }
 

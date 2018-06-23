@@ -11,7 +11,7 @@ public class DescribedFeature extends NamedFeature {
         this.description = description;
     }
 
-    public String getDescription() {
+    private String getDescription() {
         return description;
     }
 

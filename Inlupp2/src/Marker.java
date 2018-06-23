@@ -8,7 +8,7 @@ public class Marker extends JComponent {
     private final int side = 50;
     private boolean isSelected;
 
-    public Marker(Feature owner) {
+    Marker(Feature owner) {
 
         isSelected = false;
         this.owner = owner;
@@ -25,7 +25,7 @@ public class Marker extends JComponent {
         return isSelected;
     }
 
-    public void setSelected(boolean selected) {
+    void setSelected(boolean selected) {
         isSelected = selected;
         repaint();
     }

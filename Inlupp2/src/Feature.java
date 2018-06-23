@@ -11,7 +11,7 @@ public abstract class Feature implements MouseListener {
     private final ArrayList<SelectedStateListener> selectedStateEventListeners;
     private FeatureState featureState;
 
-    public Feature(Position position, FeatureCategory category, String name) {
+    Feature(Position position, FeatureCategory category, String name) {
         this.position = position;
         this.name = name;
         this.category = category != null ? category : FeatureCategory.NONE;
@@ -21,7 +21,7 @@ public abstract class Feature implements MouseListener {
         marker.addMouseListener(this);
     }
 
-    public static Feature deserialize(String serializedFeature) throws Exception {
+    static Feature deserialize(String serializedFeature) throws Exception {
         final String[] properties = serializedFeature.split(",");
 
         if (properties.length < 5)
@@ -70,27 +70,27 @@ public abstract class Feature implements MouseListener {
         return position;
     }
 
-    public Position getPosition() {
+    Position getPosition() {
         return position;
     }
 
-    public String getName() {
+    String getName() {
         return name;
     }
 
-    public FeatureCategory getCategory() {
+    FeatureCategory getCategory() {
         return category;
     }
 
-    public Marker getMarker() {
+    Marker getMarker() {
         return marker;
     }
 
-    public FeatureState getState() {
+    private FeatureState getState() {
         return featureState;
     }
 
-    public void setState(FeatureState featureState) {
+    void setState(FeatureState featureState) {
         if (featureState == getState()) return;
 
         this.featureState = featureState;
@@ -101,7 +101,7 @@ public abstract class Feature implements MouseListener {
         selectedStateEventListeners.forEach(p -> p.selectedStateChanged(this, featureState));
     }
 
-    public void toggleSelect() {
+    private void toggleSelect() {
         if (getState() == FeatureState.SELECTED)
             setState(FeatureState.UNSELECTED);
         else if (getState() == FeatureState.UNSELECTED)
@@ -142,7 +142,7 @@ public abstract class Feature implements MouseListener {
 
     }
 
-    public void addSelectedStateEventListener(SelectedStateListener listener) {
+    void addSelectedStateEventListener(SelectedStateListener listener) {
         selectedStateEventListeners.add(listener);
     }
 

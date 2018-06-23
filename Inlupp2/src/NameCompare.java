@@ -1,6 +1,6 @@
 import java.util.Comparator;
 
-public class NameCompare implements Comparator<Feature> {
+class NameCompare implements Comparator<Feature> {
     public int compare(Feature obj1, Feature obj2) {
         if (obj1 == null) {
             return -1;

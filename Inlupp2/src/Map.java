@@ -7,12 +7,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Map extends JPanel {
+class Map extends JPanel {
     private final ArrayList<IMapIsReadyListener> mapIsReadyListeners;
     private Image backgroundImage;
     private boolean isReady;
 
-    public Map(File imageFile) throws IOException {
+    Map(File imageFile) throws IOException {
         super(null);
         mapIsReadyListeners = new ArrayList<>();
         backgroundImage = loadBackgroundImage(imageFile);
@@ -28,15 +28,17 @@ public class Map extends JPanel {
     private BufferedImage loadBackgroundImage(File file) throws IOException {
         try {
             BufferedImage image = ImageIO.read(file);
+
             if (image == null)
                 throw new FileNotFoundException("File not found or is not image");
+
             return image;
         } catch (Exception e) {
             throw (new IOException("Map could not be loaded, make sure it is an image file!", e));
         }
     }
 
-    public Dimension getMapDimension() {
+    Dimension getMapDimension() {
         return new Dimension(backgroundImage.getWidth(null), backgroundImage.getHeight(null));
     }
 
@@ -51,7 +53,7 @@ public class Map extends JPanel {
         }
     }
 
-    public void addMapIsReadyListener(IMapIsReadyListener listener) {
+    void addMapIsReadyListener(IMapIsReadyListener listener) {
         mapIsReadyListeners.add(listener);
     }
 

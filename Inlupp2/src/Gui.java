@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -9,11 +10,11 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class Gui extends JFrame {
+class Gui extends JFrame {
     private Map map;
     private FeatureHandler featureHandler;
 
-    public Gui() {
+    Gui() {
         initialize();
     }
 
@@ -39,6 +40,30 @@ public class Gui extends JFrame {
 
         if (features != null && !features.isEmpty())
             features.forEach(p -> p.setState(FeatureState.HIDDEN));
+    }
+
+    private void showSelectedCategory(ListSelectionEvent e) {
+        JList<FeatureCategory> list = (JList<FeatureCategory>) e.getSource();
+
+        if (!list.getSelectedValuesList().isEmpty()) {
+            int minIndex = e.getFirstIndex();
+            int maxIndex = e.getLastIndex();
+
+            for (int i = minIndex; i <= maxIndex; i++) {
+                if (list.isSelectedIndex(i)) {
+                    showCategory(list.getModel().getElementAt(i));
+                }
+            }
+        }
+    }
+
+    private void showCategory(FeatureCategory category) {
+        if (featureHandler == null || map == null) return;
+
+        HashSet<Feature> features = featureHandler.getFeatures(category);
+
+        if (features != null && !features.isEmpty())
+            features.forEach(p -> p.setState(FeatureState.UNSELECTED));
     }
 
     private void newFeature(FeatureCategory category, boolean isDescribed) {
@@ -136,15 +161,11 @@ public class Gui extends JFrame {
         featureHandler = new FeatureHandler();
         featureHandler.attach(map);
 
-        //setMinimumSize(new Dimension((int) map.getMapDimension().getWidth() + 150, (int) map.getMapDimension().getHeight() + 50));
-        //setPreferredSize(new Dimension((int) map.getMapDimension().getWidth() + 150, (int) map.getMapDimension().getHeight() + 50));
-
         setMinimumSize(null);
         setPreferredSize(null);
 
         JScrollPane scrollPane = new JScrollPane(map);
         scrollPane.setVisible(true);
-        //scrollPane.add(map);
 
         add(scrollPane);
         SwingUtilities.updateComponentTreeUI(this);
@@ -174,7 +195,6 @@ public class Gui extends JFrame {
 
     private void showLoadFeaturesDialog() {
         if (checkAndConfirmFeatureDiscard()) return;
-
 
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.showOpenDialog(this);
@@ -267,6 +287,8 @@ public class Gui extends JFrame {
                         FeatureCategory.TRAIN,
                         FeatureCategory.UNDERGROUND
                 });
+        categories.addListSelectionListener(this::showSelectedCategory);
+
 
         JRadioButton namedPlace = new JRadioButton("Named place");
         namedPlace.setActionCommand("named");
@@ -286,7 +308,7 @@ public class Gui extends JFrame {
         removeButton.addActionListener(ActionEvent -> removeFeatures());
 
         JButton hideCategoryButton = new JButton("Hide Category");
-        hideCategoryButton.addActionListener((ActionEvent) -> hideCategory(categories.getSelectedValue()));
+        hideCategoryButton.addActionListener(ActionEvent -> hideCategory(categories.getSelectedValue()));
 
         JButton coordinates = new JButton("Coordinates");
         coordinates.addActionListener(ActionEvent -> selectCoordinates());

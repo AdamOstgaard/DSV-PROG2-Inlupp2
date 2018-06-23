@@ -1,3 +1,3 @@
-public interface IMapIsReadyListener {
+interface IMapIsReadyListener {
     void readyStateChanged(boolean isReady);
 }
