@@ -19,9 +19,7 @@ class Gui extends JFrame {
     }
 
     private void search(String text) {
-        if (featureHandler == null || map == null) return;
-
-        if (text.isEmpty()) return;
+        if (featureHandler == null || map == null || text.isEmpty()) return;
 
         featureHandler.getSelectedFeatures().forEach(p -> p.setState(FeatureState.UNSELECTED));
 
@@ -89,7 +87,7 @@ class Gui extends JFrame {
 
         try {
             position = showSelectCoordinatesDialog();
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Invalid Input");
             return;
         }
@@ -109,7 +107,7 @@ class Gui extends JFrame {
         feature.setState(FeatureState.SELECTED);
     }
 
-    private Position showSelectCoordinatesDialog() {
+    private Position showSelectCoordinatesDialog() throws NumberFormatException {
         JPanel panel = new JPanel();
 
         JLabel xLabel = new JLabel("x:");
@@ -146,8 +144,7 @@ class Gui extends JFrame {
     private void loadMap(File selectedMap) {
         featureHandler = null;
 
-        if (map != null)
-            remove(map);
+        if (map != null) remove(map);
 
         map = null;
 
@@ -226,9 +223,12 @@ class Gui extends JFrame {
     }
 
     private int showConfirmExitDialog() {
-        return JOptionPane.showConfirmDialog(null,
-                "There are unsaved changes! Are you sure you want to discard them?", "Discard changes?",
-                JOptionPane.YES_NO_OPTION);
+        return JOptionPane.showConfirmDialog(
+                null,
+                "There are unsaved changes! Are you sure you want to discard them?",
+                "Discard changes?",
+                JOptionPane.YES_NO_OPTION
+        );
     }
 
     private void hideSelected() {
